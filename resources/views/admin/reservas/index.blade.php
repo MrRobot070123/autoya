@@ -125,7 +125,7 @@
                     <!-- FORM CAMBIO DE ESTADO -->
                     <td>
 
-                        @if($r->estado == 'pagada')
+                        @if($r->estado == 'pagada'|| $r->estado == 'cancelada')
 
                             <select class="form-control" disabled>
                                 <option>{{ ucfirst($r->estado) }}</option>
@@ -142,9 +142,14 @@
                                 @method('PUT')
 
                                 <select name="estado" class="form-control">
-                                    <option value="pendiente">Pendiente</option>
-                                    <option value="confirmada">Confirmada</option>
-                                    <option value="cancelada">Cancelada</option>
+                                    <option>{{ ucfirst($r->estado) }}</option>
+                                    @if($r->estado == 'pendiente')
+                                        <option value="confirmada">Confirmada</option>
+                                        <option value="cancelada">Cancelada</option>
+                                    @elseif($r->estado == 'confirmada')
+                                        <option value="pendiente">Pendiente</option>
+                                        <option value="cancelada">Cancelada</option>
+                                    @endif
                                 </select>
 
                                 <button class="btn btn-primary mt-1 w-100">

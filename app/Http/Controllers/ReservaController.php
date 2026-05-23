@@ -245,44 +245,6 @@ class ReservaController extends Controller
         return view('admin.reservas.index', compact('reservas'));
     }
 
-    /*
-    |---------------------------------------------------------
-    | DASHBOARD
-    |---------------------------------------------------------
-    */
-    public function dashboard()
-    {
-        $totalReservas = Reserva::count();
-
-        $ingresos = Reserva::where('estado','confirmada')
-            ->sum('precio_total');
-
-        $pendientes = Reserva::where('estado','pendiente')->count();
-        $confirmadas = Reserva::where('estado','confirmada')->count();
-        $canceladas = Reserva::where('estado','cancelada')->count();
-
-        $activos = Vehiculo::where('estado','activo')->count();
-        $inactivos = Vehiculo::where('estado','inactivo')->count();
-        $mantenimiento = Vehiculo::where('estado','matto')->count();
-
-        $marcas = Vehiculo::selectRaw('marca_id, count(*) as total')
-            ->groupBy('marca_id')
-            ->with('marca')
-            ->get();
-
-        return view('admin.dashboard', compact(
-            'totalReservas',
-            'ingresos',
-            'pendientes',
-            'confirmadas',
-            'canceladas',
-            'activos',
-            'inactivos',
-            'mantenimiento',
-            'marcas'
-        ));
-    }
-
     public function misReservas()
     {
         
@@ -294,8 +256,20 @@ class ReservaController extends Controller
         $reservas = Reserva::with(['vehiculo.marca','vehiculo.modelo'])
             ->where('user_id', auth()->id())
             ->get();
+          
+        $total = $reservas->count();
+        $pendientes = $reservas->where('estado','pendiente')->count();
+        $confirmadas = $reservas->where('estado','confirmada')->count();
+        $pagadas = $reservas->where('estado','pagada')->count();
 
-        return view('cliente.reservas', compact('reservas'));
+        return view('cliente.reservas', compact(
+                'reservas',
+                'total',
+                'pendientes',
+                'confirmadas',
+                'pagadas'
+        ));
+
     }
 
     public function pagar($id)
@@ -318,6 +292,56 @@ class ReservaController extends Controller
         $reserva = Reserva::with('vehiculo')->findOrFail($id);
 
         return view('cliente.contrato', compact('reserva'));
+    }
+
+    /*
+    |---------------------------------------------------------
+    | DASHBOARD
+    |---------------------------------------------------------
+    */
+    public function dashboard()
+    {
+        $totalReservas = Reserva::count();
+
+        $ingresos = Reserva::where('estado','pagada')
+            ->sum('precio_total');
+        
+        $reservas_hoy = Reserva::whereDate('created_at', now())->count();
+
+        $ingresos_mes = Reserva::where('estado','pagada')
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->sum('precio_total');
+
+
+        $pagadas = Reserva::where('estado','pagada')->count();
+        $confirmadas = Reserva::where('estado','confirmada')->count();
+        $pendientes = Reserva::where('estado','pendiente')->count();
+        $canceladas = Reserva::where('estado','cancelada')->count();
+
+        $activos = Vehiculo::where('estado','activo')->count();
+        $inactivos = Vehiculo::where('estado','inactivo')->count();
+        $mantenimiento = Vehiculo::where('estado','matto')->count();
+
+        $marcas = Vehiculo::selectRaw('marca_id, count(*) as total')
+            ->groupBy('marca_id')
+            ->with('marca')
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalReservas',
+            'ingresos',     
+            'reservas_hoy',
+            'ingresos_mes',
+            'pagadas',
+            'confirmadas',
+            'pendientes',
+            'canceladas',
+            'activos',
+            'inactivos',
+            'mantenimiento',
+            'marcas'
+        ));
     }
 
 

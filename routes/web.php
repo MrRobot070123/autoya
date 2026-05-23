@@ -104,6 +104,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::put('/reservas/{id}', [ReservaController::class, 'update'])
         ->name('reservas.update');
 
+    Route::get('/clientes', [AdminController::class, 'clientes'])
+        ->name('admin.clientes');
+   
+    Route::get('/clientes/{id}', [AdminController::class, 'clienteDetalle'])
+        ->name('admin.clientes.detalle');
+
 });
 
 

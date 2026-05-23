@@ -4,7 +4,37 @@
 
 <div class="container mt-5" style="max-width:900px;">
 
-    <h2 class="mb-4">Mis reservas</h2>
+    <h2>Bienvenido, {{ auth()->user()->nombre }}</h2>
+
+    <div class="row mt-4">
+        <div class="col">
+            <div class="card p-3 text-center">
+                <h5>Total</h5>
+                <strong>{{ $total }}</strong>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card p-3 text-center">
+                <h5>Pendientes</h5>
+                <strong>{{ $pendientes }}</strong>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card p-3 text-center">
+                <h5>Confirmadas</h5>
+                <strong>{{ $confirmadas }}</strong>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card p-3 text-center">
+                <h5>Pagadas</h5>
+                <strong>{{ $pagadas }}</strong>
+            </div>
+        </div>
+    </div><hr>
 
     <div class="card p-3">
 
@@ -23,6 +53,12 @@
 
                 @foreach($reservas as $r)
                 <tr>
+                    
+                    @if($reservas->isEmpty())
+                        <div class="alert alert-info">
+                            No tienes reservas aún
+                        </div>
+                    @endif
 
                     <td>
                         {{ $r->vehiculo->marca->nombre }}

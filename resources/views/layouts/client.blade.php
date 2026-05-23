@@ -24,13 +24,11 @@
             <a href="/vehiculos">Vehículos</a>
             <a href="/vehiculos/buscar">Reservar</a>
 
-            {{-- ✅ SI NO ESTÁ LOGUEADO --}}
             @guest
                 <a href="{{ route('login') }}">Login</a>
                 <a href="{{ route('register') }}">Registrar</a>
             @endguest
 
-            {{-- ✅ SI ESTÁ LOGUEADO --}}
             @auth
             <div class="dropdown" style="display:inline-block;">
 
@@ -90,23 +88,23 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @if(session('success'))
-    <script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: "{{ session('success') }}",
-    });
-    </script>
+        <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: "{{ session('success') }}",
+        });
+        </script>
     @endif
 
     @if($errors->any())
-    <script>
-    Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        html: `{!! implode('<br>', $errors->all()) !!}`
-    });
-    </script>
+        <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            html: `{!! implode('<br>', $errors->all()) !!}`
+        });
+        </script>
     @endif
 
     <!-- Bootstrap JS -->
