@@ -110,6 +110,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/clientes/{id}', [AdminController::class, 'clienteDetalle'])
         ->name('admin.clientes.detalle');
 
+    Route::prefix('admin')->group(function () {
+        Route::get('/reportes', [AdminController::class, 'reportes'])
+            ->name('admin.reportes');
+    });
+    
+    Route::get('/admin/reportes/excel', [AdminController::class, 'exportExcel'])
+        ->name('admin.reportes.excel');
+
+    Route::get('/admin/reportes/pdf', [AdminController::class, 'exportPdf'])
+        ->name('admin.reportes.pdf');
+
 });
-
-

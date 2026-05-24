@@ -65,6 +65,10 @@
             <li>
                 <a href="{{ route('admin.clientes') }}" class="nav-link text-white">Clientes</a>
             </li>
+
+            <li>
+                <a href="{{ route('admin.reportes') }}" class="nav-link text-white">Reportes</a>
+            </li>
         </ul>
     </div>
 
