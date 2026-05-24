@@ -2,46 +2,99 @@
 
 @section('content')
 
+<style>
+    .card {
+        border-radius: 10px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }   
+</style>
+
 <div class="container mt-4">
+    <div class="container" style="max-width: 950px;">
 
-    <h3>Reportes</h3>
+        <h3 class="mb-4">Reportes</h3>
 
-    {{-- Ocupación --}}
-    <div class="card p-3 mb-4">
-        <h5>Ocupación de flota</h5>
+        <div class="row g-3">
 
-        <p>Total vehículos: {{ $totalVehiculos }}</p>
-        <p>Ocupados: {{ $vehiculosOcupados }}</p>
-        <p>Disponibles: {{ $disponibles }}</p>
+            <div class="col-md-3">
+                <div class="card shadow-sm p-3 text-center">
+                    <h6 class="text-muted">Ocupación</h6>
+                    <h2 class="text-success">{{ number_format($ocupacion,1) }}%</h2>
+                </div>
+            </div>
 
-        <div class="progress">
-            <div class="progress-bar bg-success"
-                style="width: {{ $ocupacion }}%">
-                {{ number_format($ocupacion,1) }}%
+            <div class="col-md-3">
+                <div class="card shadow-sm p-3 text-center">
+                    <h6 class="text-muted">Total vehículos</h6>
+                    <h2>{{ $totalVehiculos }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm p-3 text-center">
+                    <h6 class="text-muted">Ocupados</h6>
+                    <h2>{{ $vehiculosOcupados }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm p-3 text-center">
+                    <h6 class="text-muted">Disponibles</h6>
+                    <h2>{{ $disponibles }}</h2>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm p-3 mt-3">
+            <h6 class="mb-2">Ocupación de flota</h6>
+
+            <div class="progress" style="height: 25px;">
+                <div class="progress-bar bg-success"
+                    style="width: {{ $ocupacion }}%">
+                    {{ number_format($ocupacion,1) }}%
+                </div>
             </div>
         </div>
+
+        <div class="card shadow-sm p-4 mt-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>Ingresos</h5>
+
+                <form method="GET">
+                    <select name="periodo" onchange="this.form.submit()" class="form-select">
+                        <option value="dia" {{ $periodo=='dia'?'selected':'' }}>Día</option>
+                        <option value="mes" {{ $periodo=='mes'?'selected':'' }}>Mes</option>
+                        <option value="anio" {{ $periodo=='anio'?'selected':'' }}>Año</option>
+                    </select>
+                </form>
+            </div>
+
+            <div class="text-center my-4">
+                <h1 class="fw-bold text-success">
+                    ${{ number_format($ingresos) }}
+                </h1>
+            </div>
+
+            <div class="text-center">
+
+                <a href="{{ route('admin.reportes.pdf') }}" class="btn btn-danger me-2">
+                    📄 PDF
+                </a>
+
+                <a href="{{ route('admin.reportes.excel') }}" class="btn btn-success">
+                    📊 Excel
+                </a>
+
+            </div>
+
+        </div>
+
     </div>
-
-    {{-- Financiero --}}
-    <div class="card p-3">
-
-        <h5>Ingresos por periodo</h5>
-
-        <form method="GET" class="mb-3">
-            <select name="periodo" onchange="this.form.submit()">
-                <option value="dia" {{ $periodo=='dia'?'selected':'' }}>Día</option>
-                <option value="mes" {{ $periodo=='mes'?'selected':'' }}>Mes</option>
-                <option value="anio" {{ $periodo=='anio'?'selected':'' }}>Año</option>
-            </select>
-        </form>
-
-        <h4>${{ number_format($ingresos) }}</h4>
-
-    </div>
-
-    <button class="btn btn-danger"><a href="{{ route('admin.reportes.pdf') }}">Descargar PDF</a></button>
-    <button class="btn btn-success"><a href="{{ route('admin.reportes.excel') }}">Exportar Excel</a></button>
-
 </div>
 
 @endsection
