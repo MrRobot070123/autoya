@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Vehiculo;
 use App\Models\Reserva;
+use App\Models\Pago;
 use Carbon\Carbon;
 
 class ReservaController extends Controller
@@ -62,7 +63,7 @@ class ReservaController extends Controller
 
     /*
     |---------------------------------------------------------
-    | BUSCAR (CLIENTE)
+    | BUSCAR VEHICULOS (CLIENTE)
     |---------------------------------------------------------
     */
     public function buscar(Request $request)
@@ -284,12 +285,19 @@ class ReservaController extends Controller
             'numero_contrato' => 'CTR-'.time()
         ]);
 
+        Pago::create([
+            'reserva_id' => $reserva->id,
+            'numero_pago' => 'PAY-' . now()->format('Ymd') . '-' . $reserva->id,
+            'monto' => $reserva->precio_total,
+            'estado' => 'pagado',
+        ]);
+
         return back()->with('success','Pago realizado');
     }
     
     public function contrato($id)
     {
-        $reserva = Reserva::with('vehiculo')->findOrFail($id);
+        $reserva = Reserva::with('pago','vehiculo')->findOrFail($id);
 
         return view('cliente.contrato', compact('reserva'));
     }
@@ -343,6 +351,5 @@ class ReservaController extends Controller
             'marcas'
         ));
     }
-
 
 }

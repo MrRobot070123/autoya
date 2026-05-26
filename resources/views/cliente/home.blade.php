@@ -1,5 +1,4 @@
 @extends('layouts.client')
-
 @section('content')
 
     <!-- HERO -->
@@ -26,36 +25,37 @@
         </div>
     </section>
 
-    <section class="services-section">
-        <h2>Nuestros vehículos</h2>
-        <div class="services-grid">
-            @foreach($vehiculos as $v)
-                <div class="service-card">
-                    @if($v->imagenes->count())
-                        <img src="{{ asset('storage/'.$v->imagenes->first()->ruta) }}">
-                    @else
-                        https://via.placeholder.com/300x200?text=Sin+Imagen
-                    @endif
-                    <img src="img/logo-trans.png" alt="logo.png" style="width: 35%; height: 40px">
-                    <h3>
-                        {{ $v->marca->nombre }} - {{ $v->modelo->nombre }}
-                    </h3>
+    <div class="content" style="max-width: 1100px; margin: auto;">
+        <section class="services-section">
+            <h2>Nuestros vehículos</h2>
+            <div class="services-grid">
+                @foreach($vehiculos as $v)
+                    <div class="service-card">
+                        @if($v->imagenes->count())
+                            <img src="{{ asset('storage/'.$v->imagenes->first()->ruta) }}">
+                        @else
+                            https://via.placeholder.com/300x200?text=Sin+Imagen
+                        @endif
+                        <h3 style="margin:0;">
+                            {{ $v->marca->nombre }} - {{ $v->modelo->nombre }}
+                        </h3>
 
-                    <p>
-                        ${{ number_format($v->tarifa_diaria) }} / día
-                    </p>
+                        <p style="margin:0;">
+                            ${{ number_format($v->tarifa_diaria) }} / día
+                        </p>
 
-                    <p style="font-size:14px; color:#777;">
-                        {{ $v->ubicacion }}
-                    </p>
+                        <p style="font-size:14px; color:#777;" style="margin:0;">
+                            {{ $v->ubicacion }}
+                        </p>
 
-                    <a href="{{ url('/vehiculos/buscar') }}" class="btn-card">
-                        Ver disponibilidad
-                    </a>
-                </div>
-            @endforeach
-        </div>
-    </section>
+                        <a href="{{ url('/vehiculos/buscar') }}" class="btn-card">
+                            Ver disponibilidad
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+    </div>
 
     <!-- ABOUT -->
     <section class="about">

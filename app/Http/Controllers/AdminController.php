@@ -29,6 +29,21 @@ class AdminController extends Controller
         return view('admin.clientes.detalle', compact('cliente'));
     }
 
+    public function verReserva($id)
+    {
+        $reserva = Reserva::with([
+            'vehiculo.marca',
+            'vehiculo.modelo',
+            'vehiculo.tipo',
+            'vehiculo.imagenes',
+            'pago',
+            'user'
+        ])->findOrFail($id);
+
+        return view('admin.reservas.detalle', compact('reserva'));
+    }
+
+
     public function reportes(Request $request)
     {
         // Ocupacion

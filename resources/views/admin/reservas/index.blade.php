@@ -2,6 +2,41 @@
 
 @section('content')
 
+<style>
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .select-estado {
+        font-weight: 500;
+    }
+
+    .select-estado.warning {
+        background-color: #fef9c3;
+        border-color: #facc15;
+    }
+
+    .select-estado.primary {
+        background-color: #dbeafe;
+        border-color: #3b82f6;
+    }
+
+    .select-estado.success {
+        background-color: #dcfce7;
+        border-color: #22c55e;
+    }
+
+    .select-estado.danger {
+        background-color: #fee2e2;
+        border-color: #ef4444;
+    }
+
+</style>
+
 <div class="container"> 
     <div class="container" style="max-width: 950px;">
         <h2>Reservas</h2><hr>
@@ -15,6 +50,9 @@
                         <option value="">Todos</option>
                         <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>
                             Pendiente
+                        </option>
+                        <option value="pagada" {{ request('estado') == 'pagada' ? 'selected' : '' }}>
+                            Pagada
                         </option>
                         <option value="confirmada" {{ request('estado') == 'confirmada' ? 'selected' : '' }}>
                             Confirmada
@@ -66,8 +104,8 @@
                     <th>Días</th>
                     <th>Ubicación</th>
                     <th>Total</th>
-                    <th>Estado</th>
-                    <th>Cambiar estado</th>
+                    <th>Estado - Actualizar</th>
+                    <th>Detalles</th>
                 </tr>
             </thead>
 
@@ -116,49 +154,39 @@
                         </span>
                     </td>
 
-                    <td style="text-align: center;">                        
-                        <span class="badge {{ $r->color_estado }}">
-                            {{ ucfirst($r->estado) }}
-                        </span>
-                    </td>
-
-                    <!-- FORM CAMBIO DE ESTADO -->
                     <td>
+                        <form method="POST" action="{{ route('reservas.update', $r->id) }}">
+                            @csrf
+                            @method('PUT')
 
-                        @if($r->estado == 'pagada'|| $r->estado == 'cancelada')
-
-                            <select class="form-control" disabled>
-                                <option>{{ ucfirst($r->estado) }}</option>
-                            </select>
-
-                            <button class="btn btn-secondary mt-1 w-100" disabled>
-                                Bloqueado
-                            </button>
-
-                        @else
-
-                            <form method="POST" action="{{ route('reservas.update', $r->id) }}">
-                                @csrf
-                                @method('PUT')
-
-                                <select name="estado" class="form-control">
-                                    <option>{{ ucfirst($r->estado) }}</option>
-                                    @if($r->estado == 'pendiente')
-                                        <option value="confirmada">Confirmada</option>
-                                        <option value="cancelada">Cancelada</option>
-                                    @elseif($r->estado == 'confirmada')
-                                        <option value="pendiente">Pendiente</option>
-                                        <option value="cancelada">Cancelada</option>
-                                    @endif
-                                </select>
-
-                                <button class="btn btn-primary mt-1 w-100">
-                                    Actualizar
+                            <div class="d-flex gap-2">
+                                
+                                <select name="estado" 
+                                    class="form-select form-select-sm select-estado 
+                                    {{ 
+                                        $r->estado == 'pendiente' ? 'warning' : 
+                                        ($r->estado == 'confirmada' ? 'primary' : 
+                                        ($r->estado == 'pagada' ? 'success' : 'danger')) 
+                                    }}">
+                                    <option {{ $r->estado=='pendiente'?'selected':'' }}>Pendiente</option>
+                                    <option {{ $r->estado=='confirmada'?'selected':'' }}>Confirmada</option>
+                                    <option {{ $r->estado=='pagada'?'selected':'' }}>Pagada</option>
+                                    <option {{ $r->estado=='cancelada'?'selected':'' }}>Cancelada</option>
+                                </select>                   
+                                <button type="button" class="btn btn-update btn-primary">
+                                    <i class="bi bi-check-square"></i>
                                 </button>
-                            </form>
-
-                        @endif
+                            </div>
+                        </form>
                     </td>
+
+                    <td class="text-center">
+                        <a href="{{ route('admin.reservas.ver', $r->id) }}" 
+                            class="btn btn-sm btn-outline-info rounded-circle btn-action"
+                            title="Ver detalle">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td> 
                 </tr>
                 @endforeach
             </tbody>

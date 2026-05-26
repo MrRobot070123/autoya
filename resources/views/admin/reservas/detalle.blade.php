@@ -1,4 +1,4 @@
-@extends('layouts.client')
+@extends('layouts.admin')
 
 @section('content')
 
@@ -65,7 +65,7 @@
 
 <div class="container" style="max-width:800px; margin-top: 50px; margin-bottom: 50px;">
 
-    <h2>Contrato de arrendamiento</h2>
+    <h3 class="mb-3">Detalle de Reserva</h3>
 
     <div class="card p-4 shadow-lg" style="border-radius: 10px;">
         <div class="row">
@@ -125,12 +125,12 @@
                 <ul class="list-group mb-3" style="padding: 20px 0;">
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Cliente</span>
-                        <strong>{{ auth()->user()->nombre }}</strong>
+                        <strong>{{ $reserva->user->nombre }}</strong>
                     </li>
 
                     <li class="list-group-item d-flex justify-content-between">
                         <span>N° Contrato</span>
-                        <strong>{{ $reserva->numero_contrato }}</strong>
+                        <strong>{{ $reserva->numero_contrato ?? '-' }}</strong>
                     </li>
           
                     <li class="list-group-item d-flex justify-content-between">
@@ -140,7 +140,7 @@
 
                     <li class="list-group-item d-flex justify-content-between">
                         <span>N° Pago</span>
-                        <strong>{{ $reserva->pago->numero_pago ?? 'Pendiente' }}</strong>
+                        <strong>{{ $reserva->pago->numero_pago ?? '-' }}</strong>
                     </li>
 
                     <li class="list-group-item d-flex justify-content-between">

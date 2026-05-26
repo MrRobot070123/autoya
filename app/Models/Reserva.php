@@ -37,4 +37,9 @@ class Reserva extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function pago()
+    {
+        return $this->hasOne(Pago::class);
+    }
+
 }

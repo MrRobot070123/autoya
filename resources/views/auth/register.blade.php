@@ -1,71 +1,139 @@
-<x-guest-layout>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - AutoYa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #04143A, #0d6efd);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-register {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 600px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 15px;
+            width: 130px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 8px 10px;
+        }
+
+        .btn-primary {
+            border-radius: 8px;
+            padding: 10px;
+            font-weight: 500;
+            background: #04143A;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card-register">
+
+    <img src="/img/logo-trans.png" class="logo">
+
+    <h4 class="text-center mb-3">Crear cuenta</h4>
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
-        <!-- Cedula -->
-        <div>
-            <x-input-label for="cedula" :value="__('Cedula')" />
-            <x-text-input id="cedula" class="block mt-1 w-full"
-                type="text" name="cedula"
-                :value="old('cedula')" required autofocus />
-            <x-input-error :messages="$errors->get('cedula')" class="mt-2" />
+        <div class="row g-3">
+
+            <!-- Cedula -->
+            <div class="col-md-6 position-relative">
+                <label>Cédula</label>
+                <input type="text" name="cedula"
+                    value="{{ old('cedula') }}"
+                    class="form-control pe-3">
+            </div>
+
+            <!-- Nombre -->
+            <div class="col-md-6 mb-2 position-relative">
+                <label>Nombre</label>
+                <input type="text" name="nombre"
+                    value="{{ old('nombre') }}"
+                    class="form-control pe-3">
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6 mb-2 position-relative">
+                <label>Email</label>
+                <input type="email" name="email"
+                    value="{{ old('email') }}"
+                    class="form-control pe-3">
+            </div>
+
+            <!-- Teléfono -->
+            <div class="col-md-6 mb-2 position-relative">
+                <label>Teléfono</label>
+                <input type="text" name="telefono"
+                    value="{{ old('telefono') }}"
+                    class="form-control pe-3">
+            </div>
+
+            <!-- Password -->
+            <div class="col-md-6 mb-2 position-relative">
+                <label>Contraseña</label>
+                <input type="password" name="password"
+                    class="form-control pe-3">
+            </div>
+
+            <!-- Confirm -->
+            <div class="col-md-6 mb-3 position-relative">
+                <label>Confirmar contraseña</label>
+                <input type="password" name="password_confirmation"
+                    class="form-control pe-3">
+            </div>
+
         </div>
 
-        <!-- Nombre -->
-        <div>
-            <x-input-label for="nombre" :value="__('Nombre')" />
-            <x-text-input id="nombre" class="block mt-1 w-full"
-                type="text" name="nombre"
-                :value="old('nombre')" required autocomplete="name" />
-            <x-input-error :messages="$errors->get('nombre')" class="mt-2" />
+        <!-- BOTÓN -->
+        <div class="d-grid">
+            <button class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Registrar
+            </button>
         </div>
 
-        <!-- Email -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full"
-                type="email" name="email"
-                :value="old('email')" required autocomplete="email" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Telefono -->
-        <div>
-            <x-input-label for="telefono" :value="__('Telefono')" />
-            <x-text-input id="telefono" class="block mt-1 w-full"
-                type="text" name="telefono"
-                :value="old('telefono')" required autocomplete="tel" />
-            <x-input-error :messages="$errors->get('telefono')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Contraseña')" />
-            <x-text-input id="password" class="block mt-1 w-full"
-                type="password" name="password"
-                required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                type="password" name="password_confirmation"
-                required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900"
-               href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+        <div class="text-center mt-3">
+            <a href="{{ route('login') }}">
+                ¿Ya tienes cuenta? Inicia sesión
             </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Registrar') }}
-            </x-primary-button>
         </div>
-    </form>
-</x-guest-layout>
 
+    </form>
+
+</div>
+
+</body>
+</html>

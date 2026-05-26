@@ -8,7 +8,7 @@ use App\Http\Controllers\ReservaController;
 
 /*
 |--------------------------------------------------------------------------
-| 🌐 RUTAS PÚBLICAS (CLIENTE)
+RUTAS PÚBLICAS (CLIENTE)
 |--------------------------------------------------------------------------
 */
 
@@ -21,7 +21,7 @@ Route::get('/vehiculos/buscar', [ReservaController::class, 'buscar']);
 
 /*
 |--------------------------------------------------------------------------
-| 🔄 AJAX (DEPENDIENTES)
+AJAX (DEPENDIENTES)
 |--------------------------------------------------------------------------
 */
 
@@ -44,7 +44,7 @@ Route::get('/tipo/{modelo_id}', function($modelo_id) {
 
 /*
 |--------------------------------------------------------------------------
-| 🔐 AUTENTICACIÓN (BREEZE)
+AUTENTICACIÓN (BREEZE)
 |--------------------------------------------------------------------------
 */
 
@@ -52,7 +52,7 @@ require __DIR__.'/auth.php';
 
 /*
 |--------------------------------------------------------------------------
-| 👤 RUTAS CLIENTE (PROTEGIDAS)
+RUTAS CLIENTE (PROTEGIDAS)
 |--------------------------------------------------------------------------
 */
 
@@ -77,11 +77,11 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| 🛠 ADMIN
+ADMIN
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->middleware('auth')->group(function () {
+Route::middleware(['auth','admin'])->prefix('admin')->group(function () {
 
     // Dashboard
     Route::get('/', [AdminController::class, 'index']);
@@ -99,6 +99,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/reservas', [ReservaController::class, 'index']);
     Route::get('/reservas/nueva', [ReservaController::class, 'createAdmin']);
     Route::get('/reservar', [ReservaController::class, 'reservarAdmin']);
+    Route::get('/admin/reservas/{id}', [AdminController::class, 'verReserva'])
+    ->name('admin.reservas.ver');
 
     // Actualizar estado
     Route::put('/reservas/{id}', [ReservaController::class, 'update'])

@@ -56,15 +56,12 @@
                             @else
                                 https://via.placeholder.com/300x200?text=Sin+Imagen
                             @endif
-                            <h3>
+                            <h3 style="margin: 0;">
                                 {{ $v->marca->nombre }} - {{ $v->modelo->nombre }}
                             </h3>
 
-                            <p>
-                                ${{ number_format($v->tarifa_diaria) }} / día
-                            </p>
-
-                            <p style="font-size:14px; color:#777;">
+                            <p style="font-size:14px; color:#777; margin: 0;">
+                                ${{ number_format($v->tarifa_diaria) }} / día <br>
                                 {{ $v->ubicacion }}
                             </p>
                             
