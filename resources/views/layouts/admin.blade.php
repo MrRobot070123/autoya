@@ -181,11 +181,30 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="{{ route('admin.clientes') }}">
-                    <i class="bi bi-people-fill me-2"></i>
-                    Clientes
+            <li class="{{ request()->is('admin/clientes*') ? 'submenu-open' : '' }}"> 
+                <a href="#" class="submenu-toggle">
+                    <div class="menu-item">
+                        <div>
+                            <i class="bi bi-people-fill me-2"></i>
+                            Clientes
+                        </div>
+                        <span class="arrow"><i class="bi bi-caret-down-fill"></i></span>
+                    </div>
                 </a>
+                <ul class="nav submenu">
+                    <li>
+                        <a href="{{ route('admin.clientes') }}">
+                            <i class="bi bi-people-fill me-2"></i>
+                            Mostrar clientes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.clientes.crear') }}">
+                            <i class="bi bi-people-fill me-2"></i>
+                            Crear cliente
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li>
                 <a href="{{ route('admin.reportes') }}">

@@ -107,6 +107,7 @@
             </div>
 
             <!-- INFO -->
+
             <div class="col-md-6">
                 <h4 class="card-title">{{ $vehiculo->marca->nombre }} - {{ $vehiculo->modelo->nombre }}</h4><hr>
                 @php
@@ -156,6 +157,18 @@
                     <input type="hidden" name="fecha_inicio" value="{{ $inicio->toDateString() }}">
                     <input type="hidden" name="fecha_fin" value="{{ $fin->toDateString() }}">
                     <input type="hidden" name="origen" value="admin">
+                    <div class="mb-3">
+                        <label>Cliente</label>
+                        <select name="user_id" class="form-control" required>
+                            <option value="">Seleccione cliente</option>
+
+                            @foreach($clientes as $c)
+                                <option value="{{ $c->id }}">
+                                    {{ $c->nombre }} - {{ $c->cedula }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <button class="btn btn-success w-100 btn-lg">
                         Confirmar reserva

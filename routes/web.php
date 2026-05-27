@@ -5,6 +5,7 @@ use App\Models\Modelo;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VehiculoController;
 use App\Http\Controllers\ReservaController;
+use App\Http\Controllers\UserController;
 
 
 //Rutas (cliente)
@@ -61,6 +62,12 @@ Route::middleware('auth')->group(function () {
 //Rutas admin
 
 Route::middleware(['auth','admin'])->prefix('admin')->group(function () {
+
+    Route::get('/clientes/crear', [UserController::class, 'createAdmin'])
+        ->name('admin.clientes.crear');
+
+    Route::post('/clientes', [UserController::class, 'storeAdmin'])
+        ->name('admin.clientes.store');
 
     // Dashboard
     Route::get('/', [AdminController::class, 'index']);
