@@ -6,24 +6,14 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VehiculoController;
 use App\Http\Controllers\ReservaController;
 
-/*
-|--------------------------------------------------------------------------
-RUTAS PÚBLICAS (CLIENTE)
-|--------------------------------------------------------------------------
-*/
+
+//Rutas (cliente)
 
 Route::get('/', [VehiculoController::class, 'home']);
-
 Route::get('/vehiculos', [VehiculoController::class, 'catalogo']);
 Route::get('/vehiculo/{id}', [VehiculoController::class, 'showCliente']);
-
 Route::get('/vehiculos/buscar', [ReservaController::class, 'buscar']);
 
-/*
-|--------------------------------------------------------------------------
-AJAX (DEPENDIENTES)
-|--------------------------------------------------------------------------
-*/
 
 // Modelos por marca
 Route::get('/modelos/{marca_id}', function($marca_id) {
@@ -42,19 +32,11 @@ Route::get('/tipo/{modelo_id}', function($modelo_id) {
 
 });
 
-/*
-|--------------------------------------------------------------------------
-AUTENTICACIÓN (BREEZE)
-|--------------------------------------------------------------------------
-*/
 
+//autenticacion con breeze
 require __DIR__.'/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-RUTAS CLIENTE (PROTEGIDAS)
-|--------------------------------------------------------------------------
-*/
+//Rutas cliente (protegidas)
 
 Route::middleware('auth')->group(function () {
 
@@ -75,11 +57,8 @@ Route::middleware('auth')->group(function () {
 
 });
 
-/*
-|--------------------------------------------------------------------------
-ADMIN
-|--------------------------------------------------------------------------
-*/
+
+//Rutas admin
 
 Route::middleware(['auth','admin'])->prefix('admin')->group(function () {
 
@@ -111,16 +90,14 @@ Route::middleware(['auth','admin'])->prefix('admin')->group(function () {
    
     Route::get('/clientes/{id}', [AdminController::class, 'clienteDetalle'])
         ->name('admin.clientes.detalle');
-
-    Route::prefix('admin')->group(function () {
-        Route::get('/reportes', [AdminController::class, 'reportes'])
-            ->name('admin.reportes');
-    });
     
-    Route::get('/admin/reportes/excel', [AdminController::class, 'exportExcel'])
+    Route::get('/reportes', [AdminController::class, 'reportes'])
+        ->name('admin.reportes');
+
+    Route::get('/reportes/excel', [AdminController::class, 'exportExcel'])
         ->name('admin.reportes.excel');
 
-    Route::get('/admin/reportes/pdf', [AdminController::class, 'exportPdf'])
+    Route::get('/reportes/pdf', [AdminController::class, 'exportPdf'])
         ->name('admin.reportes.pdf');
 
 });

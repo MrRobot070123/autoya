@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\Php;
+use Carbon\Carbon;
 
 class ReservasExport implements 
     FromCollection, 
@@ -25,21 +26,45 @@ class ReservasExport implements
     WithEvents
 
 {
+    protected $inicio, $fin;
+
+    public function __construct($inicio, $fin)
+    {
+        $this->inicio = $inicio;
+        $this->fin = $fin;
+    }
+
     public function collection()
     {
-        return Reserva::with('user')->get()->map(function ($r) {
-            return [
-                $r->user->cedula ?? '',
-                $r->user->nombre ?? '',
-                $r->user->email ?? '',
-                $r->user->telefono ?? '',
-                $r->vehiculo_id,
-                $r->fecha_inicio,
-                $r->fecha_fin,
-                (float) $r->precio_total,
-                ucfirst($r->estado)
-            ];
-        });
+        // ✅ VALIDAR FECHAS
+        if (!empty($this->inicio) && !empty($this->fin)) {
+
+            $inicio = Carbon::parse($this->inicio);
+            $fin = Carbon::parse($this->fin);
+
+            return Reserva::with('user')
+                ->whereDate('fecha_inicio', '>=', $inicio)
+                ->whereDate('fecha_fin', '<=', $fin)
+                ->get()
+                ->map(function ($r) {
+
+                    return [
+                        $r->user->cedula ?? '',
+                        $r->user->nombre ?? '',
+                        $r->user->email ?? '',
+                        $r->user->telefono ?? '',
+                        $r->vehiculo_id,
+                        $r->fecha_inicio,
+                        $r->fecha_fin,
+                        (float) $r->precio_total,
+                        ucfirst($r->estado)
+                    ];
+                });
+
+        } 
+
+        // ✅ SIN FECHAS → VACÍO
+        return collect();
     }
 
     public function headings(): array
@@ -99,4 +124,3 @@ class ReservasExport implements
     }
 
 }
-

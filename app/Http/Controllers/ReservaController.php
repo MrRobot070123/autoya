@@ -11,11 +11,6 @@ use Carbon\Carbon;
 class ReservaController extends Controller
 {
 
-    /*
-    |---------------------------------------------------------
-    | REGLA DE CONFLICTO (CENTRAL)
-    |---------------------------------------------------------
-    */
     private function conflictoReserva($inicio, $fin)
     {
         return function($q) use ($inicio, $fin) {
@@ -30,11 +25,6 @@ class ReservaController extends Controller
         };
     }
 
-    /*
-    |---------------------------------------------------------
-    | VALIDAR DISPONIBILIDAD
-    |---------------------------------------------------------
-    */
     private function disponible($vehiculo_id, $inicio, $fin)
     {
         return !Reserva::where('vehiculo_id', $vehiculo_id)
@@ -43,11 +33,6 @@ class ReservaController extends Controller
             ->exists();
     }
 
-    /*
-    |---------------------------------------------------------
-    | VEHÍCULOS DISPONIBLES (REUTILIZABLE)
-    |---------------------------------------------------------
-    */
     private function vehiculosDisponibles($inicio, $fin)
     {
         return Vehiculo::where('estado','activo')
@@ -61,11 +46,6 @@ class ReservaController extends Controller
             ->get();
     }
 
-    /*
-    |---------------------------------------------------------
-    | BUSCAR VEHICULOS (CLIENTE)
-    |---------------------------------------------------------
-    */
     public function buscar(Request $request)
     {
         if (!$request->filled(['inicio','fin'])) {
@@ -80,11 +60,6 @@ class ReservaController extends Controller
         return view('cliente.busqueda', compact('vehiculos'));
     }
 
-    /*
-    |---------------------------------------------------------
-    | CREAR RESERVA (CLIENTE)
-    |---------------------------------------------------------
-    */
     public function create(Request $request)
     {
         $vehiculo = Vehiculo::with(['marca','modelo'])
@@ -97,11 +72,6 @@ class ReservaController extends Controller
         ]);
     }
 
-    /*
-    |---------------------------------------------------------
-    | BUSCAR RESERVA (ADMIN)
-    |---------------------------------------------------------
-    */
     public function createAdmin(Request $request)
     {
         if (!$request->filled(['inicio','fin'])) {
@@ -116,11 +86,6 @@ class ReservaController extends Controller
         return view('admin.reservas.buscar', compact('vehiculos'));
     }
 
-    /*
-    |---------------------------------------------------------
-    | RESERVAR (ADMIN)
-    |---------------------------------------------------------
-    */
     public function reservarAdmin(Request $request)
     {
         $vehiculo = Vehiculo::with(['marca','modelo','imagenes'])
@@ -133,11 +98,6 @@ class ReservaController extends Controller
         ]);
     }
 
-    /*
-    |---------------------------------------------------------
-    | GUARDAR RESERVA
-    |---------------------------------------------------------
-    */
     public function store(Request $request)
     {
         
@@ -181,11 +141,6 @@ class ReservaController extends Controller
         return $this->redirectAfterSave($request);
     }
 
-    /*
-    |---------------------------------------------------------
-    | REDIRECCIÓN LIMPIA
-    |---------------------------------------------------------
-    */
     private function redirectAfterSave($request)
     {
         if ($request->origen == 'admin') {
@@ -197,11 +152,6 @@ class ReservaController extends Controller
             ->with('success','Reserva creada correctamente');
     }
 
-    /*
-    |---------------------------------------------------------
-    | ACTUALIZAR ESTADO
-    |---------------------------------------------------------
-    */
     public function update(Request $request, $id)
     {
         $reserva = Reserva::findOrFail($id);
@@ -219,12 +169,6 @@ class ReservaController extends Controller
         return back()->with('success', 'Estado actualizado');
     }
 
-
-    /*
-    |---------------------------------------------------------
-    | LISTADO ADMIN
-    |---------------------------------------------------------
-    */
     public function index(Request $request)
     {
         $query = Reserva::with(['vehiculo.marca','vehiculo.modelo']);
@@ -302,11 +246,6 @@ class ReservaController extends Controller
         return view('cliente.contrato', compact('reserva'));
     }
 
-    /*
-    |---------------------------------------------------------
-    | DASHBOARD
-    |---------------------------------------------------------
-    */
     public function dashboard()
     {
         $totalReservas = Reserva::count();
@@ -315,12 +254,15 @@ class ReservaController extends Controller
             ->sum('precio_total');
         
         $reservas_hoy = Reserva::whereDate('created_at', now())->count();
-
-        $ingresos_mes = Reserva::where('estado','pagada')
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->sum('precio_total');
-
+        
+        $inicioMes = Carbon::now()->startOfMonth();
+        $finMes = Carbon::now()->endOfMonth();
+        $ingresos_mes = Reserva::where('estado', 'pagada')
+            ->where(function($q) use ($inicioMes, $finMes) {
+                $q->where('fecha_inicio', '<=', $finMes)
+                ->where('fecha_fin', '>=', $inicioMes);
+            })
+            ->sum('precio_total');
 
         $pagadas = Reserva::where('estado','pagada')->count();
         $confirmadas = Reserva::where('estado','confirmada')->count();

@@ -64,11 +64,25 @@
 
 </table>
 
-<div style="margin-top:20px; text-align:right;">
-    <strong>Total generado:</strong>
-    ${{ number_format($totalGeneral) }}
-</div>
+<h3 style="margin-top:20px;">Totales por estado</h3>
+
+<table width="70%" border="1" cellspacing="0" cellpadding="5">
+    <thead style="background:#04143A; color:white;">
+        <tr>
+            <th>Estado</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($totales as $t)
+        <tr>
+            <td>{{ ucfirst($t->estado) }}</td>
+            <td>${{ number_format($t->total) }}</td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
 
 <p style="text-align:center; margin-top:30px; font-size:12px;">
-    © {{ date('Y') }} AutoYa - Sistema de Alquiler
+    © {{ date('Y') }} AutoYa
 </p>

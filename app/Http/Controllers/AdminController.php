@@ -43,15 +43,43 @@ class AdminController extends Controller
         return view('admin.reservas.detalle', compact('reserva'));
     }
 
-
     public function reportes(Request $request)
     {
-        // Ocupacion
         $totalVehiculos = Vehiculo::count();
 
-        $vehiculosOcupados = Reserva::whereIn('estado', ['confirmada','pagada'])
-            ->distinct('vehiculo_id')
-            ->count();
+        if (!empty($request->inicio) && !empty($request->fin)) {
+
+
+            $inicio = Carbon::parse($request->inicio);
+            $fin = Carbon::parse($request->fin);
+
+            $vehiculosOcupados = Reserva::whereIn('estado', ['confirmada','pagada'])
+                ->whereDate('fecha_inicio', '>=', $inicio)
+                ->whereDate('fecha_fin', '<=', $fin)
+                ->distinct('vehiculo_id')
+                ->count();
+
+            $estados = Reserva::whereIn('estado', ['confirmada','pagada','pendiente'])
+                ->whereDate('fecha_inicio', '>=', $inicio)
+                ->whereDate('fecha_fin', '<=', $fin)
+                ->select('estado', \DB::raw('count(*) as total'))
+                ->groupBy('estado')
+                ->get();
+
+            $ingresos = Reserva::where('estado', 'pagada')
+                ->whereDate('fecha_inicio', '>=', $inicio)
+                ->whereDate('fecha_fin', '<=', $fin)
+                ->sum('precio_total');
+
+        } else {
+
+            $vehiculosOcupados = 0;
+            $ingresos = 0;
+            $estados = collect();
+
+            $inicio = null;
+            $fin = null;
+        }
 
         $disponibles = $totalVehiculos - $vehiculosOcupados;
 
@@ -59,49 +87,60 @@ class AdminController extends Controller
             ? ($vehiculosOcupados / $totalVehiculos) * 100 
             : 0;
 
-        // Financiero con ingresis por peiorodo
-        $periodo = $request->periodo ?? 'mes';
-
-        $query = Reserva::where('estado','pagada');
-
-        if ($periodo == 'dia') {
-            $query->whereDate('created_at', today());
-        }
-
-        if ($periodo == 'mes') {
-            $query->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year);
-        }
-
-        if ($periodo == 'anio') {
-            $query->whereYear('created_at', now()->year);
-        }
-
-        $ingresos = $query->sum('precio_total');
-
         return view('admin.reportes.index', compact(
             'totalVehiculos',
             'vehiculosOcupados',
             'disponibles',
             'ocupacion',
             'ingresos',
-            'periodo'
+            'inicio',
+            'fin',
+            'estados'
         ));
     }
-
-    public function exportPdf()
+    
+    public function exportPdf(Request $request)
     {
-        $reservas = Reserva::with('user')->get();
+        if (!empty($request->inicio) && !empty($request->fin)) {
 
-        $pdf = Pdf::loadView('admin.reportes.pdf', compact('reservas'));
+            $inicio = Carbon::parse($request->inicio);
+            $fin = Carbon::parse($request->fin);
+
+            $reservas = Reserva::with('user','vehiculo')
+                ->whereDate('fecha_inicio', '>=', $inicio)
+                ->whereDate('fecha_fin', '<=', $fin)
+                ->get();
+
+            $totales = Reserva::whereDate('fecha_inicio', '>=', $inicio)
+                ->whereDate('fecha_fin', '<=', $fin)
+                ->select('estado', \DB::raw('SUM(precio_total) as total'))
+                ->groupBy('estado')
+                ->get();
+
+        } else {
+
+            $reservas = collect();
+            $totales = collect();
+            $inicio = null;
+            $fin = null;
+        }
+
+        $pdf = Pdf::loadView('admin.reportes.pdf', compact(
+            'reservas',
+            'totales',
+            'inicio',
+            'fin'
+        ));
 
         return $pdf->download('reporte.pdf');
     }
 
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
-        return Excel::download(new ReservasExport, 'reservas.xlsx');
+        return Excel::download(
+            new ReservasExport($request->inicio, $request->fin),
+            'reservas.xlsx'
+        );
     }
-
 
 }
