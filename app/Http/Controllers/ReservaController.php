@@ -29,7 +29,7 @@ class ReservaController extends Controller
     private function disponible($vehiculo_id, $inicio, $fin)
     {
         return !Reserva::where('vehiculo_id', $vehiculo_id)
-            ->whereIn('estado', ['pendiente','confirmada'])
+            ->whereIn('estado', ['pendiente','confirmada','pagada'])
             ->where($this->conflictoReserva($inicio,$fin))
             ->exists();
     }
@@ -39,7 +39,7 @@ class ReservaController extends Controller
         return Vehiculo::where('estado','activo')
             ->whereDoesntHave('reservas', function($q) use ($inicio,$fin){
 
-                $q->whereIn('estado',['pendiente','confirmada'])
+                $q->whereIn('estado',['pendiente','confirmada','pagada'])
                   ->where($this->conflictoReserva($inicio,$fin));
 
             })

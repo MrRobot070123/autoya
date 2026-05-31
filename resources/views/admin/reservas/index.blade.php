@@ -41,9 +41,10 @@
     <div class="container" style="max-width: 950px;">
         <h2>Reservas</h2><hr>
 
+        <!-- Filtro -->
         <form method="GET" class="mb-3">
             <div class="row">
-                <!-- ESTADO -->
+                <!-- Estado -->
                 <div class="col-md-4">
                     <label>Estado</label>
                     <select name="estado" class="form-control">
@@ -63,7 +64,7 @@
                     </select>
                 </div>
 
-                <!-- FECHA INICIO -->
+                <!-- Fecha inciio -->
                 <div class="col-md-3">
                     <label>Desde</label>
                     <input type="date" 
@@ -72,7 +73,7 @@
                         value="{{ request('inicio') }}">
                 </div>
 
-                <!-- FECHA FIN -->
+                <!-- Fecha fin -->
                 <div class="col-md-3">
                     <label>Hasta</label>
                     <input type="date" 
@@ -81,7 +82,7 @@
                         value="{{ request('fin') }}">
                 </div>
 
-                <!-- BOTÓN -->
+                <!-- Boton fil -->
                 <div class="col-md-2 d-flex align-items-end">
                     <button class="btn btn-primary w-100">
                         Filtrar
@@ -96,6 +97,7 @@
             </div>
         @endif
 
+        <!-- Tabla de reservas -->
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -113,28 +115,28 @@
                 @foreach($reservas as $r)
 
                 <tr>
+                    <!-- Vehiculo -->
                     <td>
                         {{ $r->vehiculo->marca->nombre }} - 
                         {{ $r->vehiculo->modelo->nombre }}
                     </td>
-
+                    <!-- Fechas -->
                     <td style="text-align: center;">
                         {{ $r->fecha_inicio }} <br> 
                         {{ $r->fecha_fin }}
                     </td>
-
                     @php
                         $inicio = \Carbon\Carbon::parse($r->fecha_inicio);
                         $fin = \Carbon\Carbon::parse($r->fecha_fin);
                         $dias = $inicio->diffInDays($fin) + 1;
                     @endphp
-
+                    <!-- Dias -->
                     <td style="text-align: center;">{{ $dias }}</td>
-
+                    <!-- Ubicacion -->
                     <td>
                         {{ $r->vehiculo->ubicacion }}
                     </td>
-                    
+                    <!-- Total -->
                     @php
                         $inicio = \Carbon\Carbon::parse($r->fecha_inicio);
                         $fin = \Carbon\Carbon::parse($r->fecha_fin);
@@ -143,7 +145,6 @@
                         $tarifa = $r->vehiculo->tarifa_diaria;
                         $total = $dias * $tarifa;
                     @endphp
-
                     <td>
                         <small>
                             {{ $dias }} días x ${{ number_format($tarifa) }}
@@ -153,7 +154,7 @@
                             = ${{ number_format($total) }}
                         </span>
                     </td>
-
+                    <!-- Estado - actualizat -->
                     <td>
                         <form method="POST" action="{{ route('reservas.update', $r->id) }}">
                             @csrf
@@ -179,7 +180,7 @@
                             </div>
                         </form>
                     </td>
-
+                    <!-- Detalles -->
                     <td class="text-center">
                         <a href="{{ route('admin.reservas.ver', $r->id) }}" 
                             class="btn btn-sm btn-outline-info rounded-circle btn-action"
