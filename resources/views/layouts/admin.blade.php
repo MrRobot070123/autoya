@@ -160,7 +160,7 @@
                 <a href="#" class="submenu-toggle">
                     <div class="menu-item">
                         <div>
-                            <i class="bi bi-bar-chart-fill me-2"></i>
+                            <i class="bi bi-calendar-date me-1"></i>
                             Reservas
                         </div>
                         <span class="arrow"><i class="bi bi-caret-down-fill"></i></span>
@@ -185,7 +185,7 @@
                 <a href="#" class="submenu-toggle">
                     <div class="menu-item">
                         <div>
-                            <i class="bi bi-people-fill me-2"></i>
+                            <i class="bi bi-people-fill me-1"></i>
                             Clientes
                         </div>
                         <span class="arrow"><i class="bi bi-caret-down-fill"></i></span>
@@ -217,7 +217,7 @@
                     @csrf
                     <button class="dropdown-item text-danger">
                         <a>
-                            <i class="bi bi-door-closed-fill"></i>
+                            <i class="bi bi-door-closed-fill me-2"></i>
                             Cerrar sesión
                         </a>
                     </button>
